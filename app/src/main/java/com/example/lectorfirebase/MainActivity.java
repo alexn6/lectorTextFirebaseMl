@@ -3,6 +3,7 @@ package com.example.lectorfirebase;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -20,7 +21,17 @@ import com.google.firebase.ml.vision.FirebaseVision;
 import com.google.firebase.ml.vision.common.FirebaseVisionImage;
 import com.google.firebase.ml.vision.text.FirebaseVisionText;
 import com.google.firebase.ml.vision.text.FirebaseVisionTextDetector;
+//import com.karumi.dexter.Dexter;
+//import com.karumi.dexter.PermissionToken;
+//import com.karumi.dexter.listener.PermissionDeniedResponse;
+//import com.karumi.dexter.listener.PermissionGrantedResponse;
+//import com.karumi.dexter.listener.PermissionRequest;
+//import com.karumi.dexter.listener.single.PermissionListener;
+//import com.otaliastudios.cameraview.CameraView;
+//import com.otaliastudios.cameraview.Frame;
+//import com.otaliastudios.cameraview.FrameProcessor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvTextDisplay;
     private Bitmap imageBitmap;
     private String textReconized = "";
+    private ArrayList<String> listOptionsText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 detectTextFromImage();
+                // deberia mandarme a la otra pantalla(SelectPriceActivity) con los resultados de textos obtenidos
+                passToSelectText(v);
             }
         });
     }
@@ -62,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         btnCapturar = findViewById(R.id.btn_capture);
         btnReconized= findViewById(R.id.btn_detect_text);
         tvTextDisplay = findViewById(R.id.text_display);
+        listOptionsText = new ArrayList<>();
     }
 
     private void dispatchTakePictureIntent() {
@@ -109,8 +124,60 @@ public class MainActivity extends AppCompatActivity {
                 String text = block.getText();
                 tvTextDisplay.setText(text);
                 textReconized += text + " - ";
+                listOptionsText.add(text);
             }
             Toast.makeText(this, textReconized, Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void passToSelectText(View view){
+//        Intent intent = new Intent(this, SecondActivity.class);
+
+        Intent passToSelection = new Intent(this, SelectPriceActivity.class);
+        passToSelection.putExtra("text_detected", listOptionsText);
+        this.startActivity(passToSelection);
+    }
+//
+//    CameraView camera;
+//    boolean  isDetected = false;
+//    Button btnCaptureAgain;
+//
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+////        setContentView(R.layout.activity_main);
+//        setContentView(R.layout.activity_main2);
+//
+//        Dexter.withActivity(this)
+//                .withPermission(Manifest.permission.CAMERA)
+//                .withListener(new PermissionListener() {
+//                    @Override
+//                    public void onPermissionGranted(PermissionGrantedResponse response) {
+//                        setupCamera();
+//                    }
+//
+//                    @Override
+//                    public void onPermissionDenied(PermissionDeniedResponse response) {
+//                        Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    @Override
+//                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+//
+//                    }
+//                }).check();
+//    }
+//
+//    private void setupCamera() {
+//        btnCaptureAgain = findViewById(R.id.btn_again);
+//        camera = findViewById(R.id.cameraView);
+//        //camera.setLifecy
+//        camera.addFrameProcessor(new FrameProcessor() {
+//            @Override
+//            public void process(@NonNull Frame frame) {
+//                Toast.makeText(MainActivity.this, "Reconocio el cuadro.", Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//    }
 }
